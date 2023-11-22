@@ -6,10 +6,10 @@ services:
       context: .
       dockerfile: ./build/Dockerfile.ci
     environment:
-      DEFAULT_DATABASE_URL: "postgres://root:root@postgres:5432/app?sslmode=disable"
-    restart: unless-stopped
+      DEFAULT_DATABASE_URL: "postgres://user:user@postgres:5432/app?sslmode=disable"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
     - 8080:8080
 
@@ -21,17 +21,21 @@ services:
       TEST_SERVER_BASE_URL: "http://app:8080"
     command: make e2e
     depends_on:
-      - postgres
       - app
 
   postgres:
     image: "postgres:15-alpine"
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: user
       PGDATA: /data/postgres
       POSTGRES_DB: app
     tmpfs:
       - /data/postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   
