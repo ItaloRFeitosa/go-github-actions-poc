@@ -28,6 +28,7 @@ func StartServer() {
 	g.GET("/promos", promoController.GetPromos)
 	g.GET("/promos/:id", promoController.GetPromo)
 	g.POST("/promos", promoController.CreatePromo)
+	g.PUT("/promos/:id", promoController.UpdatePromo)
 
 	g.Run()
 }
