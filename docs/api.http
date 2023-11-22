@@ -1,0 +1,14 @@
+###
+POST http://localhost:8080/promos
+Content-Type: application/json
+
+{
+    "link": "https://www.kabum.com.br/produto/109595/monitor-gamer-asus-tuf-31-5-curvo-led-full-hd-165-hz-1ms-hdmi-120-srgb-vesa-freesync-premium-som-integrado-vg328h1b",
+    "productName": "Monitor Gamer Asus TUF 31.5"
+}
+
+###
+GET http://localhost:8080/promos
+
+###
+GET http://localhost:8080/promos/50

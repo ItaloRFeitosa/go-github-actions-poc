@@ -1,0 +1,26 @@
+version: '3.5'
+
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: ./build/Dockerfile
+    environment:
+      DEFAULT_DATABASE_URL: "postgres://root:root@postgres:5432/app?sslmode=disable"
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    ports:
+    - 8080:8080
+
+  postgres:
+    image: "postgres:15-alpine"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      PGDATA: /data/postgres
+      POSTGRES_DB: app
+    tmpfs:
+      - /data/postgres
+
+  
