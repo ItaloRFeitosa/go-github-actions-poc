@@ -2,6 +2,7 @@ package e2e
 
 import (
 	"net/http"
+	"os"
 	"testing"
 
 	"github.com/brianvoe/gofakeit/v6"
@@ -13,7 +14,11 @@ import (
 )
 
 func TestPromosEndpoints(t *testing.T) {
-	r := resty.New().SetBaseURL("http://localhost:8080")
+	url := os.Getenv("TEST_SERVER_BASE_URL")
+	if url == "" {
+		url = "http://localhost:8080"
+	}
+	r := resty.New().SetBaseURL(url)
 	t.Run("POST /promos", func(t *testing.T) {
 		t.Run("given valid promo params when persisted sucessfully should return promo data with status code 200", func(t *testing.T) {
 			createPromoReq := app.PromoModel{
