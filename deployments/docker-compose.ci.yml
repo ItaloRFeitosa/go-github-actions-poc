@@ -4,7 +4,7 @@ services:
   app:
     build: 
       context: .
-      dockerfile: ./build/Dockerfile
+      dockerfile: ./build/Dockerfile.ci
     environment:
       DEFAULT_DATABASE_URL: "postgres://root:root@postgres:5432/app?sslmode=disable"
     restart: unless-stopped
@@ -12,6 +12,17 @@ services:
       - postgres
     ports:
     - 8080:8080
+
+  test:
+    build: 
+      context: .
+      dockerfile: ./build/Dockerfile.ci
+    environment:
+      TEST_SERVER_BASE_URL: "http://app:8080"
+    command: make e2e
+    depends_on:
+      - postgres
+      - app
 
   postgres:
     image: "postgres:15-alpine"

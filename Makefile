@@ -13,14 +13,14 @@ dev:
 	DOCKER_BUILDKIT=0 COMPOSE_USER=$(COMPOSE_USER) docker-compose --project-directory . -f $(LOCAL_COMPOSE_FILE) up
 
 ci:
-	DOCKER_BUILDKIT=0 docker-compose --project-directory . -p ci -f $(CI_COMPOSE_FILE) up --build
+	DOCKER_BUILDKIT=0 docker-compose --project-directory . -p ci -f $(CI_COMPOSE_FILE) up --build --abort-on-container-exit --exit-code-from test
 
 ci_down:
-	DOCKER_BUILDKIT=0 docker-compose --project-directory . -p ci -f $(CI_COMPOSE_FILE) down
+	DOCKER_BUILDKIT=0 docker-compose --project-directory . -p ci -f $(CI_COMPOSE_FILE) down -v
 
 destroy:
 	docker-compose --project-directory . -f $(LOCAL_COMPOSE_FILE) down
 	sudo rm -rf ./.docker
 
 e2e:
-	go test ./test/e2e/... -count=1
+	go test ./test/e2e/... -v -count=1
