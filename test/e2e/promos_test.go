@@ -46,10 +46,19 @@ func TestPromosEndpoints(t *testing.T) {
 			promosDataResponse, err := GetPromos(r)
 			require.NoError(t, err)
 
-			assert.Equal(t, promoDataResponse.Data.ID, promosDataResponse.Data[0].ID)
-			assert.Equal(t, promoDataResponse.Data.Link, promosDataResponse.Data[0].Link)
-			assert.Equal(t, promoDataResponse.Data.ProductName, promosDataResponse.Data[0].ProductName)
-			assert.Equal(t, promoDataResponse.Data.CreatedAt.Unix(), promosDataResponse.Data[0].CreatedAt.Unix())
+			var gotPromo app.PromoModel
+
+			for _, v := range promosDataResponse.Data {
+				if v.ID == promoDataResponse.Data.ID {
+					gotPromo = v
+					break
+				}
+			}
+
+			assert.Equal(t, promoDataResponse.Data.ID, gotPromo.ID)
+			assert.Equal(t, promoDataResponse.Data.Link, gotPromo.Link)
+			assert.Equal(t, promoDataResponse.Data.ProductName, gotPromo.ProductName)
+			assert.Equal(t, promoDataResponse.Data.CreatedAt.Unix(), gotPromo.CreatedAt.Unix())
 		})
 	})
 
