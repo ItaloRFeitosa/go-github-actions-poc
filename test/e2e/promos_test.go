@@ -80,6 +80,24 @@ func TestPromosEndpoints(t *testing.T) {
 			assert.Equal(t, expectedPromoDataResponse.Data.CreatedAt.Unix(), promoDataResponse.Data.CreatedAt.Unix())
 		})
 	})
+
+	t.Run("DELETE /promos/{id}", func(t *testing.T) {
+		t.Run("after delete a promo should return 404", func(t *testing.T) {
+			var err error
+			createPromoReq := app.PromoModel{
+				ProductName: gofakeit.BookTitle(),
+				Link:        gofakeit.URL(),
+			}
+			expectedPromoDataResponse, err := CreatePromo(r, createPromoReq)
+			require.NoError(t, err)
+
+			err = DeletePromo(r, expectedPromoDataResponse.Data.ID)
+			assert.NoError(t, err)
+
+			_, err = GetPromo(r, expectedPromoDataResponse.Data.ID)
+			assert.ErrorContains(t, err, "404")
+		})
+	})
 }
 
 func CreatePromo(c *resty.Client, req app.PromoModel) (PromoDataResponse, error) {
@@ -111,4 +129,18 @@ func GetPromos(c *resty.Client) (PromosDataResponse, error) {
 
 type PromosDataResponse struct {
 	Data []app.PromoModel `json:"data"`
+}
+
+func UpdatePromo(c *resty.Client, id uint) error {
+	return httpclient.Resty[any](c).
+		Put("/promos/{id}").
+		Param("id", id).
+		NoContent()
+}
+
+func DeletePromo(c *resty.Client, id uint) error {
+	return httpclient.Resty[any](c).
+		Delete("/promos/{id}").
+		Param("id", id).
+		NoContent()
 }
