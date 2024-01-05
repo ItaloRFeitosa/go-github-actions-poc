@@ -10,28 +10,28 @@ build:
 	go build -o ./out/app ./cmd/app/main.go
 
 dev:
-	DOCKER_BUILDKIT=0 COMPOSE_USER=$(COMPOSE_USER) docker-compose --project-directory . -f $(LOCAL_COMPOSE_FILE) up -d
+	DOCKER_BUILDKIT=0 COMPOSE_USER=$(COMPOSE_USER) docker compose --project-directory . -f $(LOCAL_COMPOSE_FILE) up -d
 
 dev_stop:
-	DOCKER_BUILDKIT=0 COMPOSE_USER=$(COMPOSE_USER) docker-compose --project-directory . -f $(LOCAL_COMPOSE_FILE) stop
+	DOCKER_BUILDKIT=0 COMPOSE_USER=$(COMPOSE_USER) docker compose --project-directory . -f $(LOCAL_COMPOSE_FILE) stop
 
 dev_logs:
-	DOCKER_BUILDKIT=0 COMPOSE_USER=$(COMPOSE_USER) docker-compose --project-directory . -f $(LOCAL_COMPOSE_FILE) logs app --follow
+	DOCKER_BUILDKIT=0 COMPOSE_USER=$(COMPOSE_USER) docker compose --project-directory . -f $(LOCAL_COMPOSE_FILE) logs app --follow
 
 dev_build:
-	DOCKER_BUILDKIT=0 COMPOSE_USER=$(COMPOSE_USER) docker-compose --project-directory . -f $(LOCAL_COMPOSE_FILE) up -d --build
+	DOCKER_BUILDKIT=0 COMPOSE_USER=$(COMPOSE_USER) docker compose --project-directory . -f $(LOCAL_COMPOSE_FILE) up -d --build
 
 ci:
-	DOCKER_BUILDKIT=0 docker-compose --project-directory . -p promos_app_ci -f $(CI_COMPOSE_FILE) up --attach test --build --abort-on-container-exit --exit-code-from test
+	DOCKER_BUILDKIT=0 docker compose --project-directory . -p promos_app_ci -f $(CI_COMPOSE_FILE) up --attach test --build --abort-on-container-exit --exit-code-from test
 
 ci_nobuild:
-	DOCKER_BUILDKIT=0 docker-compose --project-directory . -p promos_app_ci -f $(CI_COMPOSE_FILE) up --attach test --abort-on-container-exit --exit-code-from test
+	DOCKER_BUILDKIT=0 docker compose --project-directory . -p promos_app_ci -f $(CI_COMPOSE_FILE) up --attach test --abort-on-container-exit --exit-code-from test
 
 ci_test_logs:
-	DOCKER_BUILDKIT=0 docker-compose --project-directory . -p promos_app_ci -f $(CI_COMPOSE_FILE) logs test
+	DOCKER_BUILDKIT=0 docker compose --project-directory . -p promos_app_ci -f $(CI_COMPOSE_FILE) logs test
 
 ci_down:
-	DOCKER_BUILDKIT=0 docker-compose --project-directory . -p promos_app_ci -f $(CI_COMPOSE_FILE) down -v
+	DOCKER_BUILDKIT=0 docker compose --project-directory . -p promos_app_ci -f $(CI_COMPOSE_FILE) down -v
 
 destroy:
 	docker-compose --project-directory . -f $(LOCAL_COMPOSE_FILE) down
