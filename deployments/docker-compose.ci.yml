@@ -2,6 +2,7 @@ version: '3.5'
 
 services:
   app:
+    image: ciapp
     build: 
       context: .
       dockerfile: ./build/Dockerfile.ci
@@ -12,9 +13,7 @@ services:
         condition: service_healthy
 
   test:
-    build: 
-      context: .
-      dockerfile: ./build/Dockerfile.ci
+    image: ciapp
     environment:
       TEST_SERVER_BASE_URL: "http://app:8080"
     command: make e2e
