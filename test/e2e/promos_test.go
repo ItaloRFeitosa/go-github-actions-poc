@@ -92,7 +92,7 @@ func TestPromosEndpoints(t *testing.T) {
 			require.NoError(t, err)
 
 			err = DeletePromo(r, expectedPromoDataResponse.Data.ID)
-			assert.NoError(t, err)
+			assert.Error(t, err)
 
 			_, err = GetPromo(r, expectedPromoDataResponse.Data.ID)
 			assert.ErrorContains(t, err, "404")
