@@ -15,4 +15,5 @@ type RequestBuilder[T any] interface {
 	Param(key string, value any) RequestBuilder[T]
 	StatusCode(int) RequestBuilder[T]
 	Exec() (T, error)
+	NoContent() error
 }

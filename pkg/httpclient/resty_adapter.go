@@ -85,6 +85,11 @@ func (rc *requestConfig[T]) Exec() (T, error) {
 	return execRequest[T](rc)
 }
 
+func (rc *requestConfig[T]) NoContent() error {
+	_, err := rc.StatusCode(http.StatusNoContent).Exec()
+	return err
+}
+
 func execRequest[T any](config *requestConfig[T]) (T, error) {
 	var (
 		result        T
@@ -111,7 +116,9 @@ func execRequest[T any](config *requestConfig[T]) (T, error) {
 		restyRequest = restyRequest.SetAuthToken(config.authToken)
 	}
 
-	restyRequest = restyRequest.SetResult(result)
+	if config.statusCode != http.StatusNoContent {
+		restyRequest = restyRequest.SetResult(result)
+	}
 
 	switch config.method {
 	case http.MethodGet:
@@ -134,6 +141,10 @@ func execRequest[T any](config *requestConfig[T]) (T, error) {
 
 	if code := restyResponse.StatusCode(); code != config.statusCode {
 		return result, fmt.Errorf("http response must return %d: got %d", config.statusCode, code)
+	}
+
+	if config.statusCode == http.StatusNoContent {
+		return result, nil
 	}
 
 	resultPtr, ok := restyResponse.Result().(*T)
