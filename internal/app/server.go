@@ -29,6 +29,7 @@ func StartServer() {
 	g.GET("/promos/:id", promoController.GetPromo)
 	g.POST("/promos", promoController.CreatePromo)
 	g.PUT("/promos/:id", promoController.UpdatePromo)
+	g.DELETE("/promos/:id", promoController.DeletePromo)
 
 	g.Run()
 }

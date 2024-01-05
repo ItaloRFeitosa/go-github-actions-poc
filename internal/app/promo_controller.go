@@ -76,5 +76,30 @@ func (pc *PromoController) UpdatePromo(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"data": promo})
+	c.AbortWithStatus(http.StatusNoContent)
+}
+
+func (pc *PromoController) DeletePromo(c *gin.Context) {
+	promo := new(PromoModel)
+
+	if err := c.ShouldBindUri(promo); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := pc.db.First(&promo).Error; err != nil {
+		code := http.StatusInternalServerError
+		if err == gorm.ErrRecordNotFound {
+			code = http.StatusNotFound
+		}
+		c.JSON(code, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := pc.db.Delete(promo).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.AbortWithStatus(http.StatusNoContent)
 }
