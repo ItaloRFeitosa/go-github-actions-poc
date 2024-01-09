@@ -21,7 +21,15 @@ services:
       - app
 
   postgres:
-    image: "postgres:15-alpine"
+    build:
+      context: .
+      dockerfile: ./build/Dockerfile.cidb
+      cache_from:
+      - postgres:15-alpine
+      - type=gha
+      cache_to:
+      - postgres:15-alpine
+      - type=gha,mode=max
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: user
