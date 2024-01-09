@@ -81,6 +81,35 @@ func TestPromosEndpoints(t *testing.T) {
 		})
 	})
 
+	t.Run("PUT /promos/{id}", func(t *testing.T) {
+		t.Run("after create promo should be able to update it", func(t *testing.T) {
+			createPromoReq := app.PromoModel{
+				ProductName: gofakeit.BookTitle(),
+				Link:        gofakeit.URL(),
+			}
+			createdPromoResponse, err := CreatePromo(r, createPromoReq)
+			require.NoError(t, err)
+
+			promoResponse, err := GetPromo(r, createdPromoResponse.Data.ID)
+			require.NoError(t, err)
+
+			promoResponse.Data.ProductName = gofakeit.BookTitle()
+			promoResponse.Data.Link = gofakeit.URL()
+
+			err = UpdatePromo(r, promoResponse.Data)
+
+			assert.NoError(t, err)
+
+			updatedResponse, err := GetPromo(r, createdPromoResponse.Data.ID)
+			require.NoError(t, err)
+
+			assert.Equal(t, promoResponse.Data.ID, updatedResponse.Data.ID)
+			assert.Equal(t, promoResponse.Data.Link, updatedResponse.Data.Link)
+			assert.Equal(t, promoResponse.Data.ProductName, updatedResponse.Data.ProductName)
+			assert.Equal(t, promoResponse.Data.CreatedAt.Unix(), updatedResponse.Data.CreatedAt.Unix())
+		})
+	})
+
 	t.Run("DELETE /promos/{id}", func(t *testing.T) {
 		t.Run("after delete a promo should return 404", func(t *testing.T) {
 			var err error
@@ -131,10 +160,11 @@ type PromosDataResponse struct {
 	Data []app.PromoModel `json:"data"`
 }
 
-func UpdatePromo(c *resty.Client, id uint) error {
+func UpdatePromo(c *resty.Client, req app.PromoModel) error {
 	return httpclient.Resty[any](c).
 		Put("/promos/{id}").
-		Param("id", id).
+		Param("id", req.ID).
+		Body(req).
 		NoContent()
 }
 
