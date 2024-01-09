@@ -22,16 +22,16 @@ dev_build:
 	DOCKER_BUILDKIT=0 COMPOSE_USER=$(COMPOSE_USER) docker compose --project-directory . -f $(LOCAL_COMPOSE_FILE) up -d --build
 
 ci:
-	DOCKER_BUILDKIT=0 docker compose --project-directory . -p promos_app_ci -f $(CI_COMPOSE_FILE) up --attach test --build --abort-on-container-exit --exit-code-from test
+	docker compose --project-directory . -p promos_app_ci -f $(CI_COMPOSE_FILE) up --attach test --build --abort-on-container-exit --exit-code-from test
 
 ci_nobuild:
-	DOCKER_BUILDKIT=0 docker compose --project-directory . -p promos_app_ci -f $(CI_COMPOSE_FILE) up --attach test --abort-on-container-exit --exit-code-from test
+	docker compose --project-directory . -p promos_app_ci -f $(CI_COMPOSE_FILE) up --attach test --abort-on-container-exit --exit-code-from test
 
 ci_test_logs:
-	DOCKER_BUILDKIT=0 docker compose --project-directory . -p promos_app_ci -f $(CI_COMPOSE_FILE) logs test
+	docker compose --project-directory . -p promos_app_ci -f $(CI_COMPOSE_FILE) logs test
 
 ci_down:
-	DOCKER_BUILDKIT=0 docker compose --project-directory . -p promos_app_ci -f $(CI_COMPOSE_FILE) down -v
+	docker compose --project-directory . -p promos_app_ci -f $(CI_COMPOSE_FILE) down -v
 
 destroy:
 	docker-compose --project-directory . -f $(LOCAL_COMPOSE_FILE) down
