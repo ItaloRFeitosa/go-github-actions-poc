@@ -25,10 +25,8 @@ services:
       context: .
       dockerfile: ./build/Dockerfile.cidb
       cache_from:
-      - postgres:15-alpine
       - type=gha
       cache_to:
-      - postgres:15-alpine
       - type=gha,mode=max
     environment:
       POSTGRES_USER: user
