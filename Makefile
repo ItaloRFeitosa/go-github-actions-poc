@@ -10,16 +10,19 @@ build:
 	go build -o ./out/app ./cmd/app/main.go
 
 dev:
-	DOCKER_BUILDKIT=0 COMPOSE_USER=$(COMPOSE_USER) docker compose --project-directory . -f $(LOCAL_COMPOSE_FILE) up -d
+	COMPOSE_USER=$(COMPOSE_USER) docker compose --project-directory . -f $(LOCAL_COMPOSE_FILE) up -d
 
 dev_stop:
-	DOCKER_BUILDKIT=0 COMPOSE_USER=$(COMPOSE_USER) docker compose --project-directory . -f $(LOCAL_COMPOSE_FILE) stop
+	COMPOSE_USER=$(COMPOSE_USER) docker compose --project-directory . -f $(LOCAL_COMPOSE_FILE) stop
+
+dev_down:
+	COMPOSE_USER=$(COMPOSE_USER) docker compose --project-directory . -f $(LOCAL_COMPOSE_FILE) down -v
 
 dev_logs:
-	DOCKER_BUILDKIT=0 COMPOSE_USER=$(COMPOSE_USER) docker compose --project-directory . -f $(LOCAL_COMPOSE_FILE) logs app --follow
+	COMPOSE_USER=$(COMPOSE_USER) docker compose --project-directory . -f $(LOCAL_COMPOSE_FILE) logs app --follow
 
 dev_build:
-	DOCKER_BUILDKIT=0 COMPOSE_USER=$(COMPOSE_USER) docker compose --project-directory . -f $(LOCAL_COMPOSE_FILE) up -d --build
+	COMPOSE_USER=$(COMPOSE_USER) docker compose --project-directory . -f $(LOCAL_COMPOSE_FILE) up -d --build
 
 ci:
 	docker compose --project-directory . -p promos_app_ci -f $(CI_COMPOSE_FILE) up --attach test --build --abort-on-container-exit --exit-code-from test
