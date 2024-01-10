@@ -6,6 +6,10 @@ services:
     build: 
       context: .
       dockerfile: ./build/Dockerfile.ci
+      cache_from:
+      - type=local,src=/tmp/.ci-docker-cache
+      cache_to:
+      - type=local,dest=/tmp/.ci-docker-cache-new,mode=max
     environment:
       DEFAULT_DATABASE_URL: "postgres://user:user@postgres:5432/app?sslmode=disable"
     depends_on:
@@ -25,9 +29,9 @@ services:
       context: .
       dockerfile: ./build/Dockerfile.cidb
       cache_from:
-      - type=gha
+      - type=local,src=/tmp/.ci-docker-cache
       cache_to:
-      - type=gha,mode=max
+      - type=local,dest=/tmp/.ci-docker-cache-new,mode=max
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: user
