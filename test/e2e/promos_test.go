@@ -20,7 +20,7 @@ func TestPromosEndpoints(t *testing.T) {
 	}
 	r := resty.New().SetBaseURL(url)
 	t.Run("POST /promos", func(t *testing.T) {
-		t.Run("given valid promo params when persisted sucessfully should return promo data with status code 200", func(t *testing.T) {
+		t.Run("given valid promo params when persisted sucessfully should return promo data with status code 201", func(t *testing.T) {
 			createPromoReq := app.PromoModel{
 				ProductName: gofakeit.BookTitle(),
 				Link:        gofakeit.URL(),
@@ -99,14 +99,24 @@ func TestPromosEndpoints(t *testing.T) {
 			err = UpdatePromo(r, promoResponse.Data)
 
 			assert.NoError(t, err)
-
 			updatedResponse, err := GetPromo(r, createdPromoResponse.Data.ID)
 			require.NoError(t, err)
-
 			assert.Equal(t, promoResponse.Data.ID, updatedResponse.Data.ID)
 			assert.Equal(t, promoResponse.Data.Link, updatedResponse.Data.Link)
 			assert.Equal(t, promoResponse.Data.ProductName, updatedResponse.Data.ProductName)
 			assert.Equal(t, promoResponse.Data.CreatedAt.Unix(), updatedResponse.Data.CreatedAt.Unix())
+			assert.Less(t, promoResponse.Data.UpdatedAt.UnixNano(), updatedResponse.Data.UpdatedAt.UnixNano())
+		})
+
+		t.Run("when promo not exists return 404", func(t *testing.T) {
+			updatePromo := app.PromoModel{
+				ID:          99999,
+				ProductName: gofakeit.BookTitle(),
+				Link:        gofakeit.URL(),
+			}
+
+			err := UpdatePromo(r, updatePromo)
+			assert.ErrorContains(t, err, "404")
 		})
 	})
 
