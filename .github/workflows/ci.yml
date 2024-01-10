@@ -14,15 +14,15 @@ jobs:
       - name: Cache Docker layers
         uses: actions/cache@v3
         with:
-          path: /tmp/.ci-docker-cache
-          key: ${{ runner.os }}-docker-cache-${{ github.sha }}
+          path: /tmp/.ci-compose-cache
+          key: ${{ runner.os }}-compose-cache
           restore-keys: |
-            ${{ runner.os }}-docker-cache
+            ${{ runner.os }}-compose-cache
       - name: "Run CI docker compose"
         run: make ci
       - name: "Clean containers"
         run: make ci_down
       - name: Move cache
         run: |
-          rm -rf /tmp/.ci-docker-cache
-          mv /tmp/.ci-docker-cache-new /tmp/.ci-docker-cache        
+          rm -rf /tmp/.ci-compose-cache
+          mv /tmp/.ci-compose-cache-new /tmp/.ci-compose-cache        
