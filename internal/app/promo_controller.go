@@ -59,19 +59,34 @@ func (pc *PromoController) GetPromo(c *gin.Context) {
 }
 
 func (pc *PromoController) UpdatePromo(c *gin.Context) {
-	promo := new(PromoModel)
+	updatePromo := new(PromoModel)
+	foundPromo := new(PromoModel)
 
-	if err := c.ShouldBindUri(promo); err != nil {
+	if err := c.ShouldBindUri(updatePromo); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := c.ShouldBindJSON(promo); err != nil {
+	if err := c.ShouldBindJSON(updatePromo); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := pc.db.Save(promo).Error; err != nil {
+	foundPromo.ID = updatePromo.ID
+
+	if err := pc.db.First(&foundPromo).Error; err != nil {
+		code := http.StatusInternalServerError
+		if err == gorm.ErrRecordNotFound {
+			code = http.StatusNotFound
+		}
+		c.JSON(code, gin.H{"error": err.Error()})
+		return
+	}
+
+	foundPromo.Link = updatePromo.Link
+	foundPromo.ProductName = updatePromo.ProductName
+
+	if err := pc.db.Save(foundPromo).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
